@@ -1,0 +1,12 @@
+celery[redis]==4.4.5
+channels_redis==2.4.2
+channels==2.4.0
+django-filter==2.3.0
+django-object-actions==2.0.0
+Django==3.0.7
+djangorestframework==3.11.0
+
+pytest
+pytest-asyncio
+pytest-django
+pytest-pycodestyle

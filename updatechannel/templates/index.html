@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Updates</title>
+</head>
+<body>
+    <h1>Updates</h1>
+    <textarea id="update-log" cols="100" rows="50" style="width:100%"></textarea><br>
+    <script>
+        const socket = new WebSocket('ws://' + window.location.host + '/ws/updates/');
+
+        socket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            document.querySelector('#update-log').value += (JSON.stringify(data.message, undefined, 2) + '\n');
+        };
+
+        socket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly', e);
+        };
+    </script>
+</body>
+</html>
