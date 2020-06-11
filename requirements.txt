@@ -9,4 +9,3 @@ djangorestframework==3.11.0
 pytest
 pytest-asyncio
 pytest-django
-pytest-pycodestyle
