@@ -39,3 +39,23 @@ Now you can browse:
 Run the tests:
 
     env/bin/py.test
+
+## Dockerization
+
+Build the webservice:
+
+    docker-compose build --no-cache webservice
+    docker build  --tag nettowel_orchestrator_zrh:latest .
+
+Start the containers:
+
+    docker-compose up
+
+Create a superuser:
+
+    docker-compose exec webservice python manage.py createsuperuser
+
+Now you can browse:
+- Backend: http://localhost:8000/
+- Adminer: http://localhost:8080/
+- Flower: http://localhost:5555/

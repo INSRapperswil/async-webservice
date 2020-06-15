@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -25,7 +26,7 @@ SECRET_KEY = ')yz30a*go5!m(983b5d%fsab(6^#ai#^#99$lxue*1$j7%%ue_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -79,12 +80,8 @@ WSGI_APPLICATION = 'webservice.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+DB_CONNECTION_STRING = os.environ.get('DB_CONNECTION_STRING', 'sqlite:///' + os.path.join(BASE_DIR, 'db.sqlite3'))
+DATABASES = {'default': dj_database_url.parse(DB_CONNECTION_STRING)}
 
 
 # Password validation
@@ -130,11 +127,13 @@ STATIC_URL = '/static/'
 # https://channels.readthedocs.io/en/latest/
 
 ASGI_APPLICATION = 'webservice.routing.application'
+CHANNEL_LAYERS_HOST = os.environ.get('CHANNEL_LAYERS_HOST', 'localhost')
+CHANNEL_LAYERS_PORT = int(os.environ.get('CHANNEL_LAYERS_PORT', '6379'))
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [('localhost', 6379)],
+            'hosts': [(CHANNEL_LAYERS_HOST, CHANNEL_LAYERS_PORT)],
         },
     },
 }
@@ -159,6 +158,11 @@ REST_FRAMEWORK = {
 # Celery
 # https://docs.celeryproject.org/en/stable/
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_SEND_EVENTS = True
+
+# Static files (CSS, JavaScript, Images)
+
+STATIC_URL = '/static/'
+STATIC_ROOT = 'static'

@@ -6,8 +6,6 @@
 
 ## Making Requests
 
-
-
 ![02-requests](assets/02-requests.svg)
 
 ## Starting Tasks
@@ -17,3 +15,8 @@
 ## Finishing Tasks
 
 ![04-finish](assets/04-finish.svg)
+
+
+## Dockerization
+
+![05-dockerization](assets/05-dockerization.svg)

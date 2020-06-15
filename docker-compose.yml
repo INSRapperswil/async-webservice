@@ -1,0 +1,90 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=webservice
+      - POSTGRES_PASSWORD=password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - 6379:6379
+
+  flower:
+    image: mher/flower
+    depends_on:
+      - redis
+    command: ["flower", "--broker=redis://redis:6379/0", "--port=5555"]
+    ports:
+       - 5555:5555
+
+  webservice:
+    image: webservice:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/code/
+      - static-files:/code/static:rw
+    depends_on:
+      - db
+      - redis
+      - celery
+    entrypoint: ./wait-for-it.sh --strict --timeout=30 db:5432 -- ./init.sh daphne --bind 0.0.0.0 --port 8000 webservice.asgi:application
+    environment:
+      - DB_CONNECTION_STRING=postgres://postgres:password@db:5432/webservice
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CHANNEL_LAYERS_HOST=redis
+      - CHANNEL_LAYERS_PORT=6379
+
+  celery:
+    image: webservice:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/code
+      - celery-state:/var/run/celery/
+    depends_on:
+      - redis
+      - db
+    environment:
+      - DB_CONNECTION_STRING=postgres://postgres:password@db:5432/webservice
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CHANNEL_LAYERS_HOST=redis
+      - CHANNEL_LAYERS_PORT=6379
+    command: celery worker --app webservice --loglevel info --statedb=/var/run/celery/worker.state
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - static-files:/var/www/static:ro
+    depends_on:
+      - webservice
+    command: nginx -c /etc/nginx/nginx.conf
+    ports:
+      - 8000:8000
+
+volumes:
+  db-data:
+    driver: local
+  celery-state:
+    driver: local
+  static-files:
+    driver: local
