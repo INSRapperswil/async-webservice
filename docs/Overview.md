@@ -20,3 +20,8 @@
 ## Dockerization
 
 ![05-dockerization](assets/05-dockerization.svg)
+
+
+## States
+
+![06-states](assets/06-states.svg)
