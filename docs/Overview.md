@@ -14,7 +14,7 @@
 
 ## Finishing Tasks
 
-![04-finish](assets/04-finish.svg)
+![04-finished](assets/04-finished.svg)
 
 
 ## Dockerization
