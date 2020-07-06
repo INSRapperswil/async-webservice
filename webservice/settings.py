@@ -162,6 +162,14 @@ CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
 CELERY_SEND_EVENTS = True
 
+CELERY_BEAT_SCHEDULE = {
+    'heartbeat': {
+        'task': 'tasks.tasks.my_periodic_task',
+        'schedule': 5.0,
+        'args': ('heartbeat',)
+    },
+}
+
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = '/static/'

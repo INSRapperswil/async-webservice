@@ -24,6 +24,9 @@ Start the celery worker:
 
     env/bin/celery -A webservice worker
 
+Start celery beat:
+    env/bin/celery -A webservice beat
+
 Start the webserver:
 
     env/bin/python manage.py runserver
