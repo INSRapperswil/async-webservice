@@ -70,6 +70,24 @@ services:
       - CHANNEL_LAYERS_PORT=6379
     command: celery worker --app webservice --loglevel info --statedb=/var/run/celery/worker.state
 
+  beat:
+    image: webservice:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/code
+    depends_on:
+      - celery
+      - redis
+      - db
+    environment:
+      - DB_CONNECTION_STRING=postgres://postgres:password@db:5432/webservice
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CHANNEL_LAYERS_HOST=redis
+      - CHANNEL_LAYERS_PORT=6379
+    command: celery beat --app webservice --loglevel info
+
   nginx:
     image: nginx:latest
     volumes:
