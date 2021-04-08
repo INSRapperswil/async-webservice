@@ -4,7 +4,7 @@ channels==2.4.0
 dj-database-url==0.5.0
 django-filter==2.3.0
 django-object-actions==2.0.0
-Django==3.0.7
+Django==3.0.14
 djangorestframework==3.11.0
 
 pytest
