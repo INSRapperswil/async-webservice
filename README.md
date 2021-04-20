@@ -49,7 +49,6 @@ Run the tests:
 Build the webservice:
 
     docker-compose build --no-cache webservice
-    docker build  --tag nettowel_orchestrator_zrh:latest .
 
 Start the containers:
 
